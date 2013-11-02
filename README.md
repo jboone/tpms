@@ -72,6 +72,11 @@ Export decoded packet data and graph using knowledge acquired above:
     cat demodulated.txt | packet_stats.py --encoding man --length 70 --decoded | tee decoded.txt
     cat decoded.txt | ride_2_decode.py | ride_2_graph.py
 
+Notes and Things to Investigate
+===============================
+
+Another CRC reversing package: http://reveng.sourceforge.net
+
 License
 =======
 
