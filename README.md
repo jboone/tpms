@@ -77,6 +77,8 @@ Notes and Things to Investigate
 
 Another CRC reversing package: http://reveng.sourceforge.net
 
+Liquid-DSP library for building efficient software defined radio implementations, perhaps on the HackRF ARM Cortex-M4F: https://github.com/jgaeddert/liquid-dsp
+
 License
 =======
 
