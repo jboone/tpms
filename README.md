@@ -1,5 +1,4 @@
-TPMS
-====
+# TPMS
 
 Software for capturing, demodulating, decoding, and assessing data from
 automotive tire pressure monitors.
@@ -13,22 +12,97 @@ devices use simple wireless communication techniques such as:
 * Small CRCs or checksums
 * Unique device identifiers
 
-Requirements
-============
+# Background
+
+For more background on this project, please watch Jared Boone's talk from ToorCon 15:
+
+[Dude, Where's My Car?: Reversing Tire Pressure Monitors with a Software Defined Radio](http://www.youtube.com/watch?v=bKqiq2Y43Wg)
+
+...or this interview with Darren Kitchen of Hak5:
+
+[Tracking Cars Wirelessly](http://hak5.org/episodes/hak5-1511)
+
+# Software
 
 This software was developed for and tested with:
 
-* GNU Radio 3.7.1
-* Python 2.7
-* PySide 1.2.0 (Qt bindings for Python)
-* bruteforce-crc (for finding CRC polynomials and other characteristics)
-* crcmod (CRC library for Python)
-* Matplotlib (for graphing data)
+* [GNU Radio](http://gnuradio.org) 3.7.1
+* [Python](http://python.org) 2.7
+* [PySide](http://qt-project.org/wiki/PySide) 1.2.0, Qt bindings for Python.
+* [bruteforce-crc](https://github.com/sitsec/bruteforce-crc), for finding CRC polynomials and other characteristics.
+* [crcmod](http://crcmod.sourceforge.net), CRC library for Python.
+* [Matplotlib](http://matplotlib.org), for graphing data.
 
-Using
-=====
+# Hardware
 
-Capture data from a vehicle with a software radio receiver like an RTL-SDR USB dongle, or a HackRF, or other device capable of capturing approximately 1MHz of complex spectrum from 315MHz or 433MHz. The best way to constrain packets received to only one vehicle is to ride in the vehicle as it is driven.
+I used a variety of hardware for receiving tire pressure monitors. If you don't already
+have a software-defined radio receiver, a $50 US investment is all you need to get started.
+
+### Quick Shopping List for The Impatient
+
+Aside from a computer capable of running GNU Radio, here's what you'll need:
+
+* [NooElec TV28T v2 DVB-T USB Stick (R820T) w/ Antenna and Remote Control](http://www.nooelec.com/store/software-defined-radio/tv28tv2.html) or [Hacker Warehouse DVB-T USB 2.0](http://hackerwarehouse.com/product/dvb-t-usb2-0/)
+* [NooElec Male MCX to Female SMA Adapter](http://www.nooelec.com/store/software-defined-radio/male-mcx-to-female-sma-adapter.html)
+* [Linx Technologies ANT-315-CW-RH-SMA 315MHz 51mm (2") helical whip antenna, SMA](http://mouser.com/Search/Refine.aspx?Keyword=ANT-315-CW-RH-SMA) or [Linx Technologies ANT-433-CW-RH-SMA 433MHz 51mm (2") helical whip antenna, SMA](http://mouser.com/Search/Refine.aspx?Keyword=ANT-433-CW-RH-SMA)
+* [Johnson / Emerson Connectivity Solutions 415-0031-024 SMA male to SMA female cable, 61cm (24")](http://mouser.com/Search/Refine.aspx?Keyword=415-0031-024), (Optional, if you don't want your antenna sticking straight out of your USB receiver dongle.)
+
+### Receiver
+
+If you're just getting started with SDR, I highly recommend getting a DVB-T USB dongle,
+supported by the [rtl-sdr](http://sdr.osmocom.org/trac/wiki/rtl-sdr) project. They cost
+$25 US, typically.
+
+Recommended DVB-T dongle vendors include:
+
+* [Hacker Warehouse](http://hackerwarehouse.com/product/dvb-t-usb2-0/)
+* [NooElec](http://www.nooelec.com/store/software-defined-radio.html)
+
+If you're looking to do active attacks on TPMS (a topic I haven't explored), I recommend
+the [HackRF](https://github.com/mossmann/hackrf/). However, my code has not yet been adapted
+to support the HackRF's much wider bandwidth, so you're on your own for the time being.
+
+### Antenna
+
+The antenna that comes with your DVB-T dongle will work well, but you'll get more signal
+and less noise with a band-specific antenna.
+
+For 315MHz:
+* Linx Technologies [ANT-315-CW-RH-SMA](http://mouser.com/Search/Refine.aspx?Keyword=ANT-315-CW-RH-SMA) 315MHz 51mm (2") helical whip antenna, SMA.
+* Linx Technologies [ANT-315-CW-RH](http://mouser.com/Search/Refine.aspx?Keyword=ANT-315-CW-RH) 315MHz 51mm (2") helical whip antenna, RP-SMA.
+* Linx Technologies [ANT-315-CW-HWR-SMA](http://mouser.com/Search/Refine.aspx?Keyword=ANT-315-CW-HWR-SMA) 315MHz 142mm (5.6") tilt/swivel whip antenna, SMA.
+* Linx Technologies [ANT-315-CW-HWR-RPS](http://mouser.com/Search/Refine.aspx?Keyword=ANT-315-CW-HWR-RPS) 315MHz 142mm (5.6") tilt/swivel whip antenna, RP-SMA.
+
+For 433MHz:
+* Linx Technologies [ANT-433-CW-RH-SMA](http://mouser.com/Search/Refine.aspx?Keyword=ANT-433-CW-RH-SMA) 433MHz 51mm (2") helical whip antenna, SMA.
+* Linx Technologies [ANT-433-CW-RH](http://mouser.com/Search/Refine.aspx?Keyword=ANT-433-CW-RH) 433MHz 51mm (2") helical whip antenna, RP-SMA.
+* Linx Technologies [ANT-433-CW-HWR-SMA](http://mouser.com/Search/Refine.aspx?Keyword=ANT-433-CW-HWR-SMA) 433MHz 142mm (5.6") tilt/swivel whip antenna, SMA.
+* Linx Technologies [ANT-433-CW-HWR-RPS](http://mouser.com/Search/Refine.aspx?Keyword=ANT-433-CW-HWR-RPS) 433MHz 142mm (5.6") tilt/swivel whip antenna, RP-SMA.
+
+I'm using the Linx Technologies ANT-315-CW-RH-SMA and ANT-433-CW-RH-SMA with good
+results, but you may prefer bigger antennas, or RP-SMA connectors.
+
+Ideally, I'd build a [Yagi-Uda antenna](http://en.wikipedia.org/wiki/Yagi-Uda_antenna). :-)
+
+### Cabling
+
+You'll need a cable to connect the antenna to the DVB-T dongle. The DVB-T dongles
+from Hacker Warehouse and NooElec have a female MCX connector. The SMA antennas I
+use have a male SMA connector. So you'll want a 50 Ohm cable with a male MCX
+connector on one side, and a female SMA connector on the other.
+
+### Filtering
+
+I like to use a SAW filter between the antenna and receiver to further cut noise
+and interference. It's certainly not necessary (and likely overkill). The SAW
+filter I use is built from a PCB I designed.
+
+# Using
+
+Capture data from a vehicle with a software radio receiver like an RTL-SDR USB
+dongle, or a HackRF, or other device capable of capturing approximately 1MHz of
+complex spectrum from 315MHz or 433MHz. The best way to constrain packets received
+to only one vehicle is to ride in the vehicle as it is driven.
 
 Extract bursts of data from the raw capture:
 
@@ -72,15 +146,13 @@ Export decoded packet data and graph using knowledge acquired above:
     cat demodulated.txt | packet_stats.py --encoding man --length 70 --decoded | tee decoded.txt
     cat decoded.txt | ride_2_decode.py | ride_2_graph.py
 
-Notes and Things to Investigate
-===============================
+# Notes and Things to Investigate
 
 Another CRC reversing package: http://reveng.sourceforge.net
 
 Liquid-DSP library for building efficient software defined radio implementations, perhaps on the HackRF ARM Cortex-M4F: https://github.com/jgaeddert/liquid-dsp
 
-License
-=======
+# License
 
 The associated software is provided under a GPLv2 license:
 
@@ -101,8 +173,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 02110-1301, USA.
 
-Contact
-=======
+# Contact
 
 Jared Boone <jared@sharebrained.com>
 
