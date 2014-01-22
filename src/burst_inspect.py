@@ -777,10 +777,6 @@ class Browser(QtGui.QWidget):
 		self.translation_frequency_slider = Slider("F Shift", -200e3, 200e3, 1e3, self._translation_frequency, self)
 		self.translation_frequency_slider.value_changed[float].connect(self.translation_frequency_changed_by_slider)
 
-		self._rrc_filter_alpha = 0.5
-		# self.rrc_filter_alpha_slider = Slider("RRC Alpha", 0.001, 1.0, 0.001, self._rrc_filter_alpha, self)
-		# self.rrc_filter_alpha_slider.value_changed[float].connect(self.rrc_filter_alpha_changed)
-
 		self._symbol_rate = 10e3
 		self.symbol_rate_slider = Slider("Symbol Rate", 5e3, 50e3, 10, self._symbol_rate, self)
 		self.symbol_rate_slider.value_changed[float].connect(self.symbol_rate_changed)
@@ -810,7 +806,6 @@ class Browser(QtGui.QWidget):
 		self.views_layout.addWidget(self.slicer_view, 4, 0)
 		self.views_layout.addWidget(self.sliced_view, 5, 0)
 		self.views_layout.addWidget(self.translation_frequency_slider, 6, 0)
-		# self.views_layout.addWidget(self.rrc_filter_alpha_slider, 6, 0)
 		self.views_layout.addWidget(self.symbol_rate_slider, 7, 0)
 		self.views_layout.addWidget(self.deviation_slider, 8, 0)
 		# self.views_layout.addWidget(self.gain_mu_slider, 9, 0)
@@ -835,12 +830,6 @@ class Browser(QtGui.QWidget):
 		self.top_layout.addWidget(self.splitter)
 
 		self.setLayout(self.top_layout)
-
-		self._rrc = False
-
-	def rrc_filter_alpha_changed(self, value):
-		self._rrc_filter_alpha = value
-		self._update_data()
 
 	def symbol_rate_changed(self, value):
 		self._symbol_rate = value
@@ -926,30 +915,20 @@ class Browser(QtGui.QWidget):
 		self.spectrum_view.burst = translated_burst
 		self.am_view.data = translated_burst
 		self.fm_view.data = translated_burst
-		self._update_rrc_filter(translated_burst)
+		self._update_filter(translated_burst)
 
-	def _update_rrc_filter(self, translated_burst):
+	def _update_filter(self, translated_burst):
 		self._samples_per_symbol = translated_burst.sampling_rate / self._symbol_rate
-		if self._rrc:
-			tap_count = int(math.floor(8.0 * self._samples_per_symbol))
-			self._taps = gr.firdes.root_raised_cosine(1, translated_burst.sampling_rate, self._symbol_rate, self._rrc_filter_alpha, tap_count)
-		else:
-			tap_count = int(math.floor(self._samples_per_symbol))
-			self._taps_n = numpy.exp(numpy.arange(tap_count, dtype=numpy.float32) * 2.0j * numpy.pi * -self._deviation / translated_burst.sampling_rate)
-			self._taps_p = numpy.exp(numpy.arange(tap_count, dtype=numpy.float32) * 2.0j * numpy.pi * self._deviation / translated_burst.sampling_rate)
+		tap_count = int(math.floor(self._samples_per_symbol))
+		x = numpy.arange(tap_count, dtype=numpy.float32) * 2.0j * numpy.pi / translated_burst.sampling_rate
+		self._taps_n = numpy.exp(x * -self._deviation)
+		self._taps_p = numpy.exp(x *  self._deviation)
 		self._update_filtered(translated_burst)
 
 	def _update_filtered(self, translated_burst):
-		if self._rrc:
-			translated_data_1 = translate_burst(translated_burst, self._deviation)
-			filtered_data_1 = TimeData(scipy.signal.lfilter(self._taps, 1, translated_data_1.samples), translated_data_1.sampling_rate)
-			translated_data_2 = translate_burst(translated_burst, -self._deviation)
-			filtered_data_2 = TimeData(scipy.signal.lfilter(self._taps, 1, translated_data_2.samples), translated_data_2.sampling_rate)
-			self.eye_view.data = (filtered_data_1.abs, filtered_data_2.abs)
-		else:
-			filtered_data_1 = TimeData(numpy.complex64(scipy.signal.lfilter(self._taps_n, 1, translated_burst.samples)), translated_burst.sampling_rate)
-			filtered_data_2 = TimeData(numpy.complex64(scipy.signal.lfilter(self._taps_p, 1, translated_burst.samples)), translated_burst.sampling_rate)
-			self.eye_view.data = (filtered_data_1.abs, filtered_data_2.abs)
+		filtered_data_1 = TimeData(numpy.complex64(scipy.signal.lfilter(self._taps_n, 1, translated_burst.samples)), translated_burst.sampling_rate)
+		filtered_data_2 = TimeData(numpy.complex64(scipy.signal.lfilter(self._taps_p, 1, translated_burst.samples)), translated_burst.sampling_rate)
+		self.eye_view.data = (filtered_data_1.abs, filtered_data_2.abs)
 
 		filtered_diff = TimeData(filtered_data_2.abs.samples - filtered_data_1.abs.samples, filtered_data_1.sampling_rate)		
 		self.slicer_view.data = filtered_diff
