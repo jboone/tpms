@@ -88,45 +88,6 @@ class TimeData(object):
 			self._abs_max = numpy.max(self.abs.samples)
 		return self._abs_max
 
-# class Burst(object):
-# 	def __init__(self, data, sampling_rate):
-# 		self._data = data
-# 		self._sampling_rate = sampling_rate
-
-# 		#self._mag_time = numpy.absolute(self._data)
-# 		#self._frequency_time = numpy.angle(self._data[1:] * numpy.conjugate(self._data[:-1]))
-# 		self._mag_spectrum = None
-
-# 	@property
-# 	def sample_count(self):
-# 		return len(self._data)
-
-# 	@property
-# 	def sampling_rate(self):
-# 		return self._sampling_rate
-
-# 	@property
-# 	def duration(self):
-# 		return float(self.sample_count) / self.sampling_rate
-
-# 	@property
-# 	def time(self):
-# 		return TimeData(self._data, self._sampling_rate)
-
-# 	# @property
-# 	# def mag_time(self):
-# 	# 	return self._mag_time
-
-# 	# @property
-# 	# def frequency_time(self):
-# 	# 	return self._frequency_time
-
-# 	@property
-# 	def mag_spectrum(self):
-# 		if self._mag_spectrum is None:
-# 			self._mag_spectrum = numpy.log(numpy.absolute(numpy.fft.fftshift(numpy.fft.fft(self._data))))
-# 		return self._mag_spectrum
-
 class Handle(QtGui.QGraphicsLineItem):
 	class Signals(QtCore.QObject):
 		position_changed = QtCore.Signal(float)
@@ -948,7 +909,6 @@ class Browser(QtGui.QWidget):
 
 		filtered_diff = TimeData(filtered_data_2.abs.samples - filtered_data_1.abs.samples, filtered_data_1.sampling_rate)		
 		self.slicer_view.data = filtered_diff
-		#print('sliced abs sum: %s' % sum(abs(filtered_diff.samples)))
 
 		omega = self._samples_per_symbol
 		mu = 0.5
@@ -956,7 +916,6 @@ class Browser(QtGui.QWidget):
 		data_source = filtered_diff.samples
 		numpy_source = NumpySource(data_source)
 		clock_recovery = digital.clock_recovery_mm_ff(omega, self._gain_omega, mu, self._gain_mu, self._omega_relative_limit)
-		#clock_recovery = digital.pfb_clock_sync_fff(self._samples_per_symbol, 1.0, self._taps)
 		numpy_sink = NumpySink(numpy.float32)
 		top = gr.top_block()
 		top.connect(numpy_source, clock_recovery)
