@@ -781,12 +781,12 @@ class Browser(QtGui.QWidget):
 		self.translation_frequency_slider = Slider("F Shift", -200e3, 200e3, 1e3, self._translation_frequency, self)
 		self.translation_frequency_slider.value_changed[float].connect(self.translation_frequency_changed_by_slider)
 
-		self._symbol_rate = 10e3
-		self.symbol_rate_slider = Slider("Symbol Rate", 5e3, 50e3, 10, self._symbol_rate, self)
+		self._symbol_rate = 20e3
+		self.symbol_rate_slider = Slider("Symbol Rate", 5e3, 25e3, 10, self._symbol_rate, self)
 		self.symbol_rate_slider.value_changed[float].connect(self.symbol_rate_changed)
 
-		self._deviation = self._symbol_rate * 4.0
-		self.deviation_slider = Slider("Deviation", 100, 100e3, 100, self._deviation, self)
+		self._deviation = self._symbol_rate * 2.0
+		self.deviation_slider = Slider("Deviation", 5e3, 50e3, 100, self._deviation, self)
 		self.deviation_slider.value_changed[float].connect(self.deviation_changed)
 
 		self._gain_mu = 0.2
