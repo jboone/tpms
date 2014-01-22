@@ -30,6 +30,8 @@ import os.path
 import numpy
 import scipy.signal
 
+import yaml
+
 from PySide import QtCore
 from PySide import QtGui
 
@@ -742,6 +744,8 @@ class Browser(QtGui.QWidget):
 		super(Browser, self).__init__(parent)
 		self.setGeometry(0, 0, 1500, 700)
 
+		self.file_path = None
+
 		file_paths = get_cfile_list(path)
 		self.file_list_view = QFileListWidget(file_paths)
 		self.file_list_view.file_changed.connect(self.set_file)
@@ -833,10 +837,12 @@ class Browser(QtGui.QWidget):
 
 	def symbol_rate_changed(self, value):
 		self._symbol_rate = value
+		self._update_yaml()
 		self._update_data()
 
 	def deviation_changed(self, value):
 		self._deviation = value
+		self._update_yaml()
 		self._update_data()
 
 	# def gain_mu_changed(self, value):
@@ -880,6 +886,7 @@ class Browser(QtGui.QWidget):
 
 	def translation_frequency_changed_by_slider(self, translation_frequency):
 		self._translation_frequency = translation_frequency
+		self._update_yaml()
 		self._update_data()
 
 	@property
@@ -899,13 +906,53 @@ class Browser(QtGui.QWidget):
 
 		self._update_data()
 
+	@property
+	def metadata_filename(self):
+		if self.file_path:
+			file_basename, file_extension = os.path.splitext(self.file_path)
+			return '%s%s' % (file_basename, '.yaml')
+		else:
+			return None
+
+	def _update_yaml(self):
+		if self.metadata_filename:
+			data = {
+				'symbol_rate': self._symbol_rate,
+				'deviation': self._deviation,
+				'center_frequency': self._translation_frequency,
+			}
+			data_yaml = yaml.dump(data)
+			f_yaml = open(self.metadata_filename, 'w')
+			f_yaml.write(data_yaml)
+			f_yaml.close()
+
 	def set_file(self, file_path):
+		if self.metadata_filename:
+			if not os.path.exists(self.metadata_filename):
+				# Save.
+				self._update_yaml()
+
+		self.file_path = file_path
+
+		if os.path.exists(self.metadata_filename):
+			f_yaml = open(self.metadata_filename, 'r')
+			metadata = yaml.load(f_yaml)
+			#self.symbol_rate_changed(metadata['symbol_rate'])
+			#self.translation_frequency_changed_by_slider(metadata['center_frequency'])
+			#self.deviation_changed(metadata['deviation'])
+			self.symbol_rate_slider.value = metadata['symbol_rate']
+			self.translation_frequency_slider.value = metadata['center_frequency']
+			self.deviation_slider.value = metadata['deviation']
+
 		data = numpy.fromfile(file_path, dtype=numpy.complex64)
 		sampling_rate = 400e3
 		self.burst = TimeData(data, sampling_rate)
 
 	def delete_file(self, file_path):
-		os.remove(file_path)
+		file_base, file_ext = os.path.splitext(file_path)
+		file_glob = '%s%s' % (file_base, '.*')
+		for matched_file_path in glob.glob(file_glob):
+			os.remove(matched_file_path)
 
 	def _update_data(self):
 		self._update_translation()
