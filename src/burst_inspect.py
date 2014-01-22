@@ -790,16 +790,8 @@ class Browser(QtGui.QWidget):
 		self.deviation_slider.value_changed[float].connect(self.deviation_changed)
 
 		self._gain_mu = 0.2
-		# self.gain_mu_slider = Slider("Gain Mu", 0.001, 1.0, 0.001, self._gain_mu, self)
-		# self.gain_mu_slider.value_changed[float].connect(self.gain_mu_changed)
-
 		self._gain_omega = 0.25 * self._gain_mu * self._gain_mu
-		# self.gain_omega_slider = Slider("Gain Omega", 0.00001, 0.01, 0.00001, self._gain_omega, self)
-		# self.gain_omega_slider.value_changed[float].connect(self.gain_omega_changed)
-
 		self._omega_relative_limit = 0.001
-		# self.omega_relative_limit_slider = Slider("Omega RL", 0.0001, 0.1, 0.0001, self._omega_relative_limit, self)
-		# self.omega_relative_limit_slider.value_changed[float].connect(self.omega_relative_limit_changed)
 
 		self.views_layout = QtGui.QGridLayout()
 		self.views_layout.setContentsMargins(0, 0, 0, 0)
@@ -812,9 +804,6 @@ class Browser(QtGui.QWidget):
 		self.views_layout.addWidget(self.translation_frequency_slider, 6, 0)
 		self.views_layout.addWidget(self.symbol_rate_slider, 7, 0)
 		self.views_layout.addWidget(self.deviation_slider, 8, 0)
-		# self.views_layout.addWidget(self.gain_mu_slider, 9, 0)
-		# self.views_layout.addWidget(self.gain_omega_slider, 10, 0)
-		# self.views_layout.addWidget(self.omega_relative_limit_slider, 11, 0)
 		self.views_layout.setRowStretch(0, 0)
 		self.views_layout.setRowStretch(1, 0)
 		self.views_layout.setRowStretch(2, 0)
@@ -824,9 +813,6 @@ class Browser(QtGui.QWidget):
 		self.views_layout.setRowStretch(6, 0)
 		self.views_layout.setRowStretch(7, 0)
 		self.views_layout.setRowStretch(8, 0)
-		# self.views_layout.setRowStretch(9, 0)
-		# self.views_layout.setRowStretch(10, 0)
-		# self.views_layout.setRowStretch(11, 0)
 		self.views_layout.setRowStretch(12, 1)
 		self.views_widget.setLayout(self.views_layout)
 
@@ -844,20 +830,6 @@ class Browser(QtGui.QWidget):
 		self._deviation = value
 		self._update_yaml()
 		self._update_data()
-
-	# def gain_mu_changed(self, value):
-	# 	self._gain_mu = value
-	# 	self._gain_omega = 0.25 * self._gain_mu * self._gain_mu
-	# 	self.gain_omega_slider.value = self._gain_omega
-	# 	self._update_data()
-
-	# def gain_omega_changed(self, value):
-	# 	self._gain_omega = value
-	# 	self._update_data()
-
-	# def omega_relative_limit_changed(self, value):
-	# 	self._omega_relative_limit = value
-	# 	self._update_data()
 
 	def range_changed(self, start_time, end_time):
 		print('%f %f' % (start_time, end_time))
@@ -937,9 +909,6 @@ class Browser(QtGui.QWidget):
 		if os.path.exists(self.metadata_filename):
 			f_yaml = open(self.metadata_filename, 'r')
 			metadata = yaml.load(f_yaml)
-			#self.symbol_rate_changed(metadata['symbol_rate'])
-			#self.translation_frequency_changed_by_slider(metadata['center_frequency'])
-			#self.deviation_changed(metadata['deviation'])
 			self.symbol_rate_slider.value = metadata['symbol_rate']
 			self.translation_frequency_slider.value = metadata['center_frequency']
 			self.deviation_slider.value = metadata['deviation']
@@ -1016,247 +985,3 @@ if __name__ == '__main__':
 	browser.show()
 
 	sys.exit(app.exec_())
-
-###########################################################################
-
-		# pen_histogram = QtGui.QPen(QtGui.QColor(255, 64, 64, 255))
-		# brush_histogram = QtGui.QBrush(QtGui.QColor(255, 0, 0, 192))
-		# self.histogram_path = HistogramItem()
-		# self.histogram_path.setPen(pen_histogram)
-		# self.histogram_path.setBrush(brush_histogram)
-		# self.histogram_path.setZValue(200)
-		# self.histogram_path.bin_count = 50
-		# self.scene.addItem(self.histogram_path)
-
-	# def _update_data_path(self):
-	# 	if self.burst is None:
-	# 		self.data_path.data = None
-	# 	else:
-	# 		data = self.burst.time
-	# 		data = (range(len(data)), data)
-	# 		self.data_path.data = data
-
-	# def _update_data_scale(self):
-	# 	if self.burst is None:
-	# 		return
-
-	# 	data = self.burst.time
-	# 	absmax = max(numpy.absolute(data))
-	# 	scale_x = float(self.width()) / len(data)
-	# 	scale_y = float(self.height()) / absmax
-
-	# 	transform = QtGui.QTransform()
-	# 	if self._bipolar:
-	# 		transform.translate(0, self.height() / 2.0)
-	# 		transform.scale(scale_x, -scale_y / 2.0)
-	# 	else:
-	# 		transform.translate(0, self.height())
-	# 		transform.scale(scale_x, -scale_y)
-	# 	self.data_path.setTransform(transform)
-
-	# def _update_histogram_path(self):
-	# 	if self.burst is None:
-	# 		self.histogram_path.data = None
-	# 	else:
-	# 		data = self.burst.time
-	# 		data = (range(len(data)), data)
-	# 		self.histogram_path.data = data
-
-		# path = QtGui.QPainterPath()
-		# path.moveTo(0, data[1][0])
-		# for i in range(len(data[0])):
-		# 	y = data[1][i]
-		# 	x = data[0][i]
-		# 	path.lineTo(x, y)
-		# path.lineTo(0, data[1][-1])
-		# self.histogram_path.setPath(path)
-
-	# def _update_histogram_scale(self):
-	# 	path_width = self.histogram_path.path().boundingRect().width()
-	# 	scale_y = float(self.height()) / path_width
-
-	# 	transform = QtGui.QTransform()
-	# 	transform.scale(10.0, 0.1)
-	# 	if self._bipolar:
-	# 		#transform.translate(0, self.height() / 2.0)
-	# 		pass
-	# 	else:
-	# 		#transform.translate(0, self.height())
-	# 		pass
-	# 	#transform.scale(1, -scale_y)
-	# 	#transform.scale(scale_y, 1)
-	# 	#transform.rotate(-45)
-	# 	self.histogram_path.setTransform(transform)
-
-	# def _update_view(self):
-	# 	if self.burst is None:
-	# 		return
-
-	# 	self._update_data_scale()
-	# 	self.histogram_path.bin_count = self.height()
-
-###########################################################################
-
-		# color_transparent = QtGui.QColor(0, 0, 0, 0)
-		# null_pen = QtGui.QPen()
-		# null_pen.setWidth(0)
-		# null_pen.setColor(color_transparent)
-
-		# crop_mask_color = QtGui.QColor(0, 0, 0, 128)
-		# crop_mask_brush = QtGui.QBrush(crop_mask_color)
-
-		# select_mask_color = QtGui.QColor(0, 0, 0, 0)
-		# select_mask_brush = QtGui.QBrush(select_mask_color)
-
-		# self.head_mask = QtGui.QGraphicsRectItem()
-		# self.head_mask.setPen(null_pen)
-		# self.head_mask.setBrush(crop_mask_color)
-		# self.head_mask.setZValue(100)
-		# self.scene.addItem(self.head_mask)
-
-		# self.tail_mask = QtGui.QGraphicsRectItem()
-		# self.tail_mask.setPen(null_pen)
-		# self.tail_mask.setBrush(crop_mask_color)
-		# self.tail_mask.setZValue(100)
-		# self.scene.addItem(self.tail_mask)
-
-		# self.select_mask = QtGui.QGraphicsRectItem()
-		# self.select_mask.setPen(null_pen)
-		# self.select_mask.setBrush(select_mask_brush)
-		# self.select_mask.setZValue(100)
-		# self.scene.addItem(self.select_mask)
-
-		# self.start_widget = Handle()
-		# self.start_widget.signals.position_changed.connect(self.start_changed)
-		# self.start_widget.setZValue(300)
-		# self.scene.addItem(self.start_widget)
-
-		# self.end_widget = Handle()
-		# self.end_widget.signals.position_changed.connect(self.end_changed)
-		# self.end_widget.setZValue(300)
-		# self.scene.addItem(self.end_widget)
-
-###########################################################################
-
-	# @property
-	# def time_data(self):
-	# 	return self._time_data
-
-	# @property
-	# def histogram_data(self):
-	# 	return self._histogram_data
-
-	# def start_changed(self, new_value):
-	# 	if self.burst:
-	# 		self.start_time = new_value / self.width() * self.burst.duration
-	# 		self.range_changed.emit(self.start_time, self.end_time)
-	# 		self._update_mask()
-
-	# def end_changed(self, new_value):
-	# 	if self.burst:
-	# 		self.end_time = new_value / self.width() * self.burst.duration
-	# 		self.range_changed.emit(self.start_time, self.end_time)
-	# 		self._update_mask()
-		
-	# def _data_changed(self):
-	# 	self.start_time = 0.0
-	# 	self.end_time = self.burst.duration
-		
-	# 	#self._update_data_path()
-	# 	#self._update_histogram_path()
-	# 	self._update_view()
-	# 	self._update_mask()
-
-	# def _update_mask(self):
-	# 	if self.burst is None:
-	# 		return
-
-	# 	start = self.start_time / self.burst.duration
-	# 	end = self.end_time / self.burst.duration
-
-	# 	width = self.width()
-	# 	height = self.height()
-
-	# 	start_x = start * width
-	# 	end_x = end * width
-
-	# 	self.head_mask.setRect(0, 0, start_x, height)
-	# 	self.tail_mask.setRect(end_x, 0, width - end_x, height)
-	# 	self.select_mask.setRect(start_x, 0, end_x - start_x, height)
-
-	# 	self.start_widget.setPos(start_x, 0)
-	# 	self.start_widget.setHeight(self.height())
-
-	# 	self.end_widget.setPos(end_x, 0)
-	# 	self.end_widget.setHeight(self.height())
-
-###########################################################################
-
-# class CFileList(QtCore.QAbstractListModel):
-#	def __init__(self):
-#		super(CFileList, self).__init__()
-#		self._data = self._fetch_data()
-
-#	def _fetch_data(self):
-#		return get_cfile_list()
-		
-#	def rowCount(self, parent):
-#		return len(self._data)
-
-#	def data(self, index, role=QtCore.Qt.DisplayRole):
-#		if not index.isValid():
-#			return None
-
-#		file_name, file_path = self._data[index.row()]
-#		if role == QtCore.Qt.DisplayRole:
-#			return file_name
-#		elif role == QtCore.Qt.DecorationRole:
-#			return None
-
-#		return None
-
-###########################################################################
-
-# class TestWidget(QtGui.QWidget):
-# 	def __init__(self, parent=None):
-# 		super(TestWidget, self).__init__(parent)
-# 
-# 	def paintEvent(self, event):
-# 		painter = QtGui.QPainter()
-# 		painter.begin(self)
-# 		painter.fillRect(self.rect(), QtCore.Qt.black)
-# 		painter.end()
-# 
-# class TestWindow(QtGui.QWidget):
-# 	def __init__(self, parent=None):
-# 		super(TestWindow, self).__init__(parent)
-# 
-# 		left_widget = TestWidget()
-# 		right_widget = QtGui.QFrame()
-# 
-# 		splitter = QtGui.QSplitter()
-# 		splitter.addWidget(left_widget)
-# 		splitter.addWidget(right_widget)
-# 
-# 		# item_1 = QtGui.QLabel("Label 1")
-# 		# item_2 = QtGui.QLabel("Label 2")
-# 		# item_3 = QtGui.QLabel("Label 3")
-# 
-# 		item_1 = TestWidget()
-# 		item_2 = TestWidget()
-# 		item_3 = TestWidget()
-# 
-# 		box_layout = QtGui.QVBoxLayout()
-# 		box_layout.addWidget(item_1)
-# 		box_layout.addWidget(item_2)
-# 		box_layout.addWidget(item_3)
-# 		right_widget.setLayout(box_layout)
-# 
-# 		top_layout = QtGui.QVBoxLayout()
-# 		top_layout.addWidget(splitter)
-# 
-# 		self.setLayout(top_layout)
-# 
-
-	#test = TestWindow()
-	#test.show()
