@@ -37,7 +37,7 @@ from gnuradio import gr
 from gnuradio import digital
 
 from numpy_block import NumpySource, NumpySink
-from packet import packet_classify
+#from packet import packet_classify
 
 class TimeData(object):
 	def __init__(self, data, sampling_rate):
@@ -526,8 +526,8 @@ class SlicerWidget(QtGui.QWidget):
 		super(SlicerWidget, self).resizeEvent(event)
 		self.slicer_view.resize(event.size())
 
-def classify_burst(data):
-	return packet_classify(data.samples, data.sampling_rate)
+# def classify_burst(data):
+# 	return packet_classify(data.samples, data.sampling_rate)
 	
 # def estimate_fsk_carrier(data):
 # 	spectrum = numpy.fft.fftshift(numpy.fft.fft(data.samples))
@@ -891,7 +891,7 @@ class Browser(QtGui.QWidget):
 		self._burst = value
 
 		# carrier_frequency, spread_frequency = estimate_fsk_carrier(self._burst)
-		burst_characteristics = classify_burst(self._burst)
+		#burst_characteristics = classify_burst(self._burst)
 
 		#self._translation_frequency = -burst_characteristics['carrier']
 		#if burst_characteristics['modulation'] == 'fsk':
