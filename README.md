@@ -26,8 +26,15 @@ For more background on this project, please watch Jared Boone's talk from ToorCo
 
 This software was developed for and tested with:
 
+* [rtl-sdr](http://sdr.osmocom.org/trac/wiki/rtl-sdr)
 * [GNU Radio](http://gnuradio.org) 3.7.1
 * [Python](http://python.org) 2.7
+* [NumPy](http://numpy.scipy.org/) Numerical Python library.
+* [SciPy](http://scipy.org/scipylib/) Scientific Python library.
+* [PyFFTW](http://hgomersall.github.io/pyFFTW/) Python interface to FFTW.
+* [FFTW](http://www.fftw.org) Fastest FFT in the West.
+* [PyTZ](http://pytz.sourceforge.net) Timezone library.
+* [PyISO8601](https://bitbucket.org/micktwomey/pyiso8601/) Python ISO8601 date/time parsing library.
 * [PySide](http://qt-project.org/wiki/PySide) 1.2.0, Qt bindings for Python.
 * [bruteforce-crc](https://github.com/sitsec/bruteforce-crc), for finding CRC polynomials and other characteristics.
 * [crcmod](http://crcmod.sourceforge.net), CRC library for Python.
