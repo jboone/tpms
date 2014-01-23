@@ -106,7 +106,7 @@ filter I use is built from a PCB I designed.
 
 # Using
 
-Capture data from a vehicle with a software radio receiver like an RTL-SDR USB
+Capture data from a vehicle with a software radio receiver like an DVB-T USB
 dongle, or a HackRF, or other device capable of capturing approximately 1MHz of
 complex spectrum from 315MHz or 433MHz. The best way to constrain packets received
 to only one vehicle is to ride in the vehicle as it is driven.
