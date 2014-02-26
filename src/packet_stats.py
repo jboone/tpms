@@ -69,6 +69,7 @@ decoded_packets = []
 
 packet_fields = ('timestamp', 'access_code', 'payload', 'modulation', 'carrier', 'deviation', 'symbol_rate', 'filename')
 
+packet_count = 0
 ruler_interval = 5
 
 for packet_line in sys.stdin:
@@ -83,6 +84,8 @@ for packet_line in sys.stdin:
 	packet['carrier'] = float(packet['carrier'])
 	packet['deviation'] = float(packet['deviation'])
 	packet['symbol_rate'] = float(packet['symbol_rate'])
+	if len(packet_line) == 0:
+		continue
 
 	packet['payload'] = decoder_fn(packet['payload']).split('X')[0]
 
@@ -123,6 +126,8 @@ for packet_line in sys.stdin:
 			))
 		else:
 			print(packet['payload'])
+
+	packet_count += 1
 
 # if unique_packet_counts:
 # 	print('Unique packets')
