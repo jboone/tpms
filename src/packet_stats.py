@@ -79,16 +79,21 @@ for packet_line in sys.stdin:
 	if packet_line.startswith('Using Volk machine: '):
 		continue
 
-	packet = dict(zip(packet_fields, packet_line.split()))
-	packet['timestamp'] = iso8601.parse_date(packet['timestamp'])
-	packet['carrier'] = float(packet['carrier'])
-	packet['deviation'] = float(packet['deviation'])
-	packet['symbol_rate'] = float(packet['symbol_rate'])
 	if len(packet_line) == 0:
 		continue
 
-	packet['payload'] = decoder_fn(packet['payload']).split('X')[0]
+	packet_line_split = packet_line.split()
+	if len(packet_line_split) > 1:
+		packet = dict(zip(packet_fields, packet_line_split))
+		packet['timestamp'] = iso8601.parse_date(packet['timestamp'])
+		packet['carrier'] = float(packet['carrier'])
+		packet['deviation'] = float(packet['deviation'])
+		packet['symbol_rate'] = float(packet['symbol_rate'])
+	else:
+		packet = {}
+		packet['payload'] = packet_line_split[0]
 
+	packet['payload'] = decoder_fn(packet['payload']).split('X')[0]
 	if len(packet['payload']) == 0:
 		continue
 
@@ -153,8 +158,10 @@ for packet_line in sys.stdin:
 
 if args.lengthstats:
 	print('Length statistics:')
-	for n in sorted(packet_length_counts):
-		print('\t%d: %d' % (n, packet_length_counts[n]))
+	length_accumulator = 0
+	for n in sorted(packet_length_counts, reverse=True):
+		length_accumulator += packet_length_counts[n]
+		print('\t%2d: %3d   | %4d' % (n, packet_length_counts[n], length_accumulator))
 	print
 
 if args.brutecrc:
