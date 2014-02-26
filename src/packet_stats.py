@@ -62,7 +62,7 @@ packet_length_counts = defaultdict(int)
 unique_packet_counts = defaultdict(int)
 
 if args.length:
-	byte_stats = [defaultdict(int) for n in range(int(math.ceil(args.length / 8.0)))]
+	byte_stats = [defaultdict(int) for n in range(int(math.ceil(args.length / 8.0)) + 1)]
 	packet_first_byte_offset = args.length % 8
 
 decoded_packets = []
