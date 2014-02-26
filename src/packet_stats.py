@@ -40,10 +40,12 @@ parser = ArgumentParser()
 parser.add_argument('-l', '--length', type=int, default=None, help="Required packet decoded symbol length (longer packets will be truncated)")
 parser.add_argument('-e', '--encoding', type=str, default='raw', help="Bit encoding (man, diffman)")
 parser.add_argument('--decoded', action="store_true", help="Display decoded packets")
+parser.add_argument('--ruler', action="store_true", help="Display bit-index ruler along with decoded packets")
 parser.add_argument('--lengthstats', action="store_true", help="Display statistics on packet length distribution")
 parser.add_argument('--bitstats', action="store_true", help="Display statistics on each bit across all packets")
 parser.add_argument('--brutecrc', type=int, default=None, help="Display packet data for brute force CRC, with packet occurrence above threshold")
 parser.add_argument('--rangestats', type=str, default=None, help="Display statistics on a range of bits")
+parser.add_argument('-v', '--verbose', action="store_true", default=False, help="Show more detail (if available)")
 args = parser.parse_args()
 
 if args.rangestats:
@@ -66,6 +68,8 @@ if args.length:
 decoded_packets = []
 
 packet_fields = ('timestamp', 'access_code', 'payload', 'modulation', 'carrier', 'deviation', 'symbol_rate', 'filename')
+
+ruler_interval = 5
 
 for packet_line in sys.stdin:
 	packet_line = packet_line.strip()
@@ -101,16 +105,24 @@ for packet_line in sys.stdin:
 	unique_packet_counts[packet['payload']] += 1
 
 	if args.decoded:
-		print('%s %s %s %s %d %d %d %s' % (
-			packet['timestamp'].isoformat(),
-			packet['access_code'],
-			packet['payload'],
-			packet['modulation'],
-			packet['carrier'],
-			packet['deviation'],
-			packet['symbol_rate'],
-			packet['filename'],
-		))
+		if args.ruler and (packet_count % ruler_interval) == 0:
+			s = []
+			for i in range(10):
+				s.append('%d----+----' % i)
+			print(''.join(s))
+		if args.verbose:
+			print('%s %s %s %s %d %d %d %s' % (
+				packet['timestamp'].isoformat(),
+				packet['access_code'],
+				packet['payload'],
+				packet['modulation'],
+				packet['carrier'],
+				packet['deviation'],
+				packet['symbol_rate'],
+				packet['filename'],
+			))
+		else:
+			print(packet['payload'])
 
 # if unique_packet_counts:
 # 	print('Unique packets')
@@ -163,6 +175,9 @@ if args.bitstats:
 	print
 
 if args.rangestats:
+	if args.ruler:
+		s = ' ' * args.rangestats[0] + '^' * (args.rangestats[1] - args.rangestats[0])
+		print(s)
 	print('Range %d:%d' % args.rangestats)
 	range_stats = defaultdict(int)
 	for payload in unique_packet_counts.keys():
