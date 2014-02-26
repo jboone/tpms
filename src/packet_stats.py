@@ -68,6 +68,8 @@ decoded_packets = []
 packet_fields = ('timestamp', 'access_code', 'payload', 'modulation', 'carrier', 'deviation', 'symbol_rate', 'filename')
 
 for packet_line in sys.stdin:
+	packet_line = packet_line.strip()
+
 	# TODO: Hack to skip the VOLK message that GNU Radio insists on writing to stdout.
 	if packet_line.startswith('Using Volk machine: '):
 		continue
