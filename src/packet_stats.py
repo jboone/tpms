@@ -167,7 +167,7 @@ if args.rangestats:
 	range_stats = defaultdict(int)
 	for payload in unique_packet_counts.keys():
 		range_value = payload[args.rangestats[0]:args.rangestats[1]]
-		range_stats[range_value] += 1
+		range_stats[range_value] += unique_packet_counts[payload]
 	for key in sorted(range_stats):
 		print('%9x %12d %s: %d' % (int(key, 2), int(key, 2), key, range_stats[key]))
 	print
