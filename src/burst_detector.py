@@ -95,9 +95,11 @@ class burst_detector(gr.basic_block):
 			
 			if self.hysteresis_count > 0:
 				if self._burst == False:
-					#print('T: %d, %d' % (nitems_written + index_start - self.block_size, nitems_written))
-					self.add_item_tag(0, nitems_written + index_start - self.block_size, self._burst_tag_symbol, gr.pmt.PMT_T)
-					self._burst = True
+					tag_sample_index = nitems_written + index_start - self.block_size
+					if tag_sample_index >= 0:
+						#print('T: %d, %d' % (tag_sample_index, nitems_written))
+						self.add_item_tag(0, tag_sample_index, self._burst_tag_symbol, gr.pmt.PMT_T)
+						self._burst = True
 				#print('%6d %.3f' % (datetime.datetime.now().microsecond, block_max))
 			else:
 				if self._burst == True:
