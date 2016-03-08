@@ -16,11 +16,11 @@ devices use simple wireless communication techniques such as:
 
 For more background on this project, please watch Jared Boone's talk from ToorCon 15:
 
-[Dude, Where's My Car?: Reversing Tire Pressure Monitors with a Software Defined Radio](http://www.youtube.com/watch?v=bKqiq2Y43Wg)
+"Dude, Where's My Car?: Reversing Tire Pressure Monitors with a Software Defined Radio" [[video](http://www.youtube.com/watch?v=bKqiq2Y43Wg)] [[slides](http://sharebrained.com/downloads/toorcon/dude_wheres_my_car_toorcon_sd_2013.pdf)]
 
 ...or this interview with Darren Kitchen of Hak5:
 
-[Hak5 1511 – Tracking Cars Wirelessly And Intercepting Femtocell Traffic](http://hak5.org/episodes/hak5-1511)
+"Hak5 1511 – Tracking Cars Wirelessly And Intercepting Femtocell Traffic" [[video](http://hak5.org/episodes/hak5-1511)]
 
 # Software
 
