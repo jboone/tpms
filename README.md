@@ -1,5 +1,15 @@
 # TPMS
 
+________________________________________________________
+***This project is no longer maintained. Other, much better tools have come along that solve similar problems.***
+    
+Please take a look at:
+* [Universal Radio Hacker](https://github.com/jopohl/urh)
+* [Inspectrum](https://github.com/miek/inspectrum/)
+* [rtl_433](https://github.com/merbanan/rtl_433)
+* TPMS products made by [Autel](https://www.auteleshop.com/) and others.
+________________________________________________________
+
 Software for capturing, demodulating, decoding, and assessing data from
 automotive tire pressure monitors.
 
